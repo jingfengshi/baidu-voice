@@ -39,7 +39,7 @@ BAIDU_VOICE_API_ID=xxxx
 ```
 可以使用两种方式来获取  `jingfengshi\BaiduVoice\AiSpeech` 实例:
 
-##方法参数注入
+## 方法参数注入
 
 ```shell
   .
@@ -55,7 +55,7 @@ BAIDU_VOICE_API_ID=xxxx
 
 ```
 
-##服务名访问
+## 服务名访问
 
 ```shell
  .
