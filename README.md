@@ -2,7 +2,7 @@
 
 <p align="center">:rainbow: 基于百度语音接口 PHP 获取语音内容的信息组件</p>
 
-
+![StyleCI build status](https://github.styleci.io/repos/项目 ID/164062667) 
 ## 安装
 
 ```shell
