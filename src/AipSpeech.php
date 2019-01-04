@@ -17,6 +17,7 @@
 
 namespace jingfengshi\BaiduVoice;
 
+use jingfengshi\BaiduVoice\Exceptions\InvalidArgumentException;
 use jingfengshi\BaiduVoice\lib\AipBase;
 
 /**
@@ -93,30 +94,39 @@ class AipSpeech extends AipBase
         return $obj;
     }
 
+
     /**
-     * @param string $speech
-     * @param string $format
-     * @param int    $rate
-     * @param array  $options
-     *
-     * @return array
+     * @param $speech
+     * @param $format
+     * @param int $rate
+     * @param array $options
+     * @return mixed
+     * @throws InvalidArgumentException
      */
-    public function asr($speech, $format, $rate, $options = [])
+    public function getContentFromVoice($speech, $format, $rate=1600, $options = [])
     {
         $data = [];
-
-        if (!empty($speech)) {
-            $data['speech'] = base64_encode($speech);
-            $data['len'] = strlen($speech);
+        if(empty($speech)){
+            throw new InvalidArgumentException('请输入语音内容');
+        }
+        if(!in_array(\strtolower($format),['pcm','wav','amr'])){
+            throw new InvalidArgumentException('语音类型非法: '.$format);
         }
 
-        $data['format'] = $format;
-        $data['rate'] = $rate;
-        $data['channel'] = 1;
+        try{
+            $data['speech'] = base64_encode($speech);
+            $data['len'] = strlen($speech);
+            $data['format'] = $format;
+            $data['rate'] = $rate;
+            $data['channel'] = 1;
 
-        $data = array_merge($data, $options);
+            $data = array_merge($data, $options);
 
-        return $this->request($this->asrUrl, $data, []);
+            return $this->request($this->asrUrl, $data, []);
+        }catch (\Exception $e){
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+        }
+
     }
 
     /**

@@ -9,10 +9,12 @@
         }
     ],
     "require": {
+        "phpunit/phpunit": "^7.5",
+        "mockery/mockery": "^1.2"
     },
     "autoload": {
         "psr-4": {
-            "Jingfengshi\\BaiduVoice\\": "src"
+            "jingfengshi\\BaiduVoice\\": "src"
         }
     },
     "extra": {
