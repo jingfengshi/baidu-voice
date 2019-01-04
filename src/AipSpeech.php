@@ -14,29 +14,36 @@
 * License for the specific language governing permissions and limitations under
 * the License.
 */
-namespace jingfengshi\BaiduVoice;
-use jingfengshi\BaiduVoice\lib\AipBase;
-/**
- * 百度语音
- */
-class AipSpeech extends AipBase{
 
+namespace jingfengshi\BaiduVoice;
+
+use jingfengshi\BaiduVoice\lib\AipBase;
+
+/**
+ * 百度语音.
+ */
+class AipSpeech extends AipBase
+{
     /**
-     * url
+     * url.
+     *
      * @var string
      */
     public $asrUrl = 'http://vop.baidu.com/server_api';
 
     /**
-     * url
+     * url.
+     *
      * @var string
      */
     public $ttsUrl = 'http://tsn.baidu.com/text2audio';
 
     /**
-     * 判断认证是否有权限
-     * @param  array   $authObj 
-     * @return boolean          
+     * 判断认证是否有权限.
+     *
+     * @param array $authObj
+     *
+     * @return bool
      */
     protected function isPermission($authObj)
     {
@@ -44,21 +51,22 @@ class AipSpeech extends AipBase{
     }
 
     /**
-     * 处理请求参数
+     * 处理请求参数.
+     *
      * @param string $url
-     * @param array $params
-     * @param array $data
-     * @param array $headers
+     * @param array  $params
+     * @param array  $data
+     * @param array  $headers
      */
-    protected function proccessRequest($url, &$params, &$data, $headers){
-
+    protected function proccessRequest($url, &$params, &$data, $headers)
+    {
         $token = isset($params['access_token']) ? $params['access_token'] : '';
         $data['cuid'] = md5($token);
 
-        if($url === $this->asrUrl){
+        if ($url === $this->asrUrl) {
             $data['token'] = $token;
             $data = json_encode($data);
-        }else{
+        } else {
             $data['tok'] = $token;
         }
 
@@ -66,33 +74,38 @@ class AipSpeech extends AipBase{
     }
 
     /**
-     * 格式化结果
+     * 格式化结果.
+     *
      * @param $content string
+     *
      * @return mixed
      */
-    protected function proccessResult($content){
+    protected function proccessResult($content)
+    {
         $obj = json_decode($content, true);
 
-        if($obj === null){
-            $obj = array(
-                'content' => $content
-            );
+        if ($obj === null) {
+            $obj = [
+                'content' => $content,
+            ];
         }
 
         return $obj;
     }
 
     /**
-     * @param  string $speech
-     * @param  string $format
-     * @param  int $rate
-     * @param  array $options
+     * @param string $speech
+     * @param string $format
+     * @param int    $rate
+     * @param array  $options
+     *
      * @return array
      */
-    public function asr($speech, $format, $rate, $options=array()){
-        $data = array();
+    public function asr($speech, $format, $rate, $options = [])
+    {
+        $data = [];
 
-        if(!empty($speech)){
+        if (!empty($speech)) {
             $data['speech'] = base64_encode($speech);
             $data['len'] = strlen($speech);
         }
@@ -101,34 +114,35 @@ class AipSpeech extends AipBase{
         $data['rate'] = $rate;
         $data['channel'] = 1;
 
-        $data = array_merge($data, $options);  
+        $data = array_merge($data, $options);
 
-        return $this->request($this->asrUrl, $data, array());
+        return $this->request($this->asrUrl, $data, []);
     }
 
     /**
-     * @param  string $text
-     * @param  string $lang
-     * @param  int $ctp
-     * @param  array $options
+     * @param string $text
+     * @param string $lang
+     * @param int    $ctp
+     * @param array  $options
+     *
      * @return array
      */
-    public function synthesis($text, $lang='zh', $ctp=1, $options=array()){
-        $data = array();
+    public function synthesis($text, $lang = 'zh', $ctp = 1, $options = [])
+    {
+        $data = [];
 
         $data['tex'] = $text;
         $data['lan'] = $lang;
         $data['ctp'] = $ctp;
 
-        $data = array_merge($data, $options);  
+        $data = array_merge($data, $options);
 
-        $result = $this->request($this->ttsUrl, $data, array());
+        $result = $this->request($this->ttsUrl, $data, []);
 
-        if(!isset($result['err_no'])){
+        if (!isset($result['err_no'])) {
             return $result['content'];
         }
 
         return $result;
     }
-
 }

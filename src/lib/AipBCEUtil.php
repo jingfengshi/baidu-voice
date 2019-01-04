@@ -16,9 +16,11 @@
 */
 
 /**
- * BCE Util
+ * BCE Util.
  */
+
 namespace  jingfengshi\BaiduVoice\lib;
+
 class AipHttpUtil
 {
     // 根据RFC 3986，除了：
@@ -31,60 +33,67 @@ class AipHttpUtil
     //填充编码数组
     public static function __init()
     {
-        AipHttpUtil::$PERCENT_ENCODED_STRINGS = array();
-        for ($i = 0; $i < 256; ++$i) {
-            AipHttpUtil::$PERCENT_ENCODED_STRINGS[$i] = sprintf("%%%02X", $i);
+        self::$PERCENT_ENCODED_STRINGS = [];
+        for ($i = 0; $i < 256; $i++) {
+            self::$PERCENT_ENCODED_STRINGS[$i] = sprintf('%%%02X', $i);
         }
 
         //a-z不编码
         foreach (range('a', 'z') as $ch) {
-            AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord($ch)] = $ch;
+            self::$PERCENT_ENCODED_STRINGS[ord($ch)] = $ch;
         }
 
         //A-Z不编码
         foreach (range('A', 'Z') as $ch) {
-            AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord($ch)] = $ch;
+            self::$PERCENT_ENCODED_STRINGS[ord($ch)] = $ch;
         }
 
         //0-9不编码
         foreach (range('0', '9') as $ch) {
-            AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord($ch)] = $ch;
+            self::$PERCENT_ENCODED_STRINGS[ord($ch)] = $ch;
         }
 
         //以下4个字符不编码
-        AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord('-')] = '-';
-        AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord('.')] = '.';
-        AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord('_')] = '_';
-        AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord('~')] = '~';
+        self::$PERCENT_ENCODED_STRINGS[ord('-')] = '-';
+        self::$PERCENT_ENCODED_STRINGS[ord('.')] = '.';
+        self::$PERCENT_ENCODED_STRINGS[ord('_')] = '_';
+        self::$PERCENT_ENCODED_STRINGS[ord('~')] = '~';
     }
 
     /**
      * 在uri编码中不能对'/'编码
-     * @param  string $path
+     *
+     * @param string $path
+     *
      * @return string
      */
     public static function urlEncodeExceptSlash($path)
     {
-        return str_replace("%2F", "/", AipHttpUtil::urlEncode($path));
+        return str_replace('%2F', '/', self::urlEncode($path));
     }
 
     /**
      * 使用编码数组编码
-     * @param  string $path
+     *
+     * @param string $path
+     *
      * @return string
      */
     public static function urlEncode($value)
     {
         $result = '';
-        for ($i = 0; $i < strlen($value); ++$i) {
-            $result .= AipHttpUtil::$PERCENT_ENCODED_STRINGS[ord($value[$i])];
+        for ($i = 0; $i < strlen($value); $i++) {
+            $result .= self::$PERCENT_ENCODED_STRINGS[ord($value[$i])];
         }
+
         return $result;
     }
 
     /**
-     * 生成标准化QueryString
-     * @param  array $parameters
+     * 生成标准化QueryString.
+     *
+     * @param array $parameters
+     *
      * @return array
      */
     public static function getCanonicalQueryString(array $parameters)
@@ -94,7 +103,7 @@ class AipHttpUtil
             return '';
         }
 
-        $parameterStrings = array();
+        $parameterStrings = [];
         foreach ($parameters as $k => $v) {
             //跳过Authorization字段
             if (strcasecmp('Authorization', $k) == 0) {
@@ -102,16 +111,16 @@ class AipHttpUtil
             }
             if (!isset($k)) {
                 throw new \InvalidArgumentException(
-                    "parameter key should not be null"
+                    'parameter key should not be null'
                 );
             }
             if (isset($v)) {
                 //对于有值的，编码后放在=号两边
-                $parameterStrings[] = AipHttpUtil::urlEncode($k)
-                    . '=' . AipHttpUtil::urlEncode((string) $v);
+                $parameterStrings[] = self::urlEncode($k)
+                    .'='.self::urlEncode((string) $v);
             } else {
                 //对于没有值的，只将key编码后放在=号的左边，右边留空
-                $parameterStrings[] = AipHttpUtil::urlEncode($k) . '=';
+                $parameterStrings[] = self::urlEncode($k).'=';
             }
         }
         //按照字典序排序
@@ -122,8 +131,10 @@ class AipHttpUtil
     }
 
     /**
-     * 生成标准化uri
-     * @param  string $path
+     * 生成标准化uri.
+     *
+     * @param string $path
+     *
      * @return string
      */
     public static function getCanonicalURIPath($path)
@@ -134,16 +145,18 @@ class AipHttpUtil
         } else {
             //所有的uri必须以'/'开头
             if ($path[0] == '/') {
-                return AipHttpUtil::urlEncodeExceptSlash($path);
+                return self::urlEncodeExceptSlash($path);
             } else {
-                return '/' . AipHttpUtil::urlEncodeExceptSlash($path);
+                return '/'.self::urlEncodeExceptSlash($path);
             }
         }
     }
 
     /**
-     * 生成标准化http请求头串
-     * @param  array $headers
+     * 生成标准化http请求头串.
+     *
+     * @param array $headers
+     *
      * @return array
      */
     public static function getCanonicalHeaders($headers)
@@ -153,7 +166,7 @@ class AipHttpUtil
             return '';
         }
 
-        $headerStrings = array();
+        $headerStrings = [];
         foreach ($headers as $k => $v) {
             //跳过key为null的
             if ($k === null) {
@@ -164,7 +177,7 @@ class AipHttpUtil
                 $v = '';
             }
             //trim后再encode，之后使用':'号连接起来
-            $headerStrings[] = AipHttpUtil::urlEncode(strtolower(trim($k))) . ':' . AipHttpUtil::urlEncode(trim($v));
+            $headerStrings[] = self::urlEncode(strtolower(trim($k))).':'.self::urlEncode(trim($v));
         }
         //字典序排序
         sort($headerStrings);
@@ -174,7 +187,6 @@ class AipHttpUtil
     }
 }
 AipHttpUtil::__init();
-
 
 class AipSignOption
 {
@@ -191,11 +203,9 @@ class AipSignOption
     const MAX_EXPIRATION_IN_SECONDS = 129600;
 }
 
-
 class AipSampleSigner
 {
-
-    const BCE_AUTH_VERSION = "bce-auth-v1";
+    const BCE_AUTH_VERSION = 'bce-auth-v1';
     const BCE_PREFIX = 'x-bce-';
 
     //不指定headersToSign情况下，默认签名http头，包括：
@@ -205,24 +215,26 @@ class AipSampleSigner
     //    4.content-md5
     public static $defaultHeadersToSign;
 
-    public static function  __init()
+    public static function __init()
     {
-        AipSampleSigner::$defaultHeadersToSign = array(
-            "host",
-            "content-length",
-            "content-type",
-            "content-md5",
-        );
+        self::$defaultHeadersToSign = [
+            'host',
+            'content-length',
+            'content-type',
+            'content-md5',
+        ];
     }
 
     /**
-     * 签名
-     * @param  array $credentials
-     * @param  string $httpMethod
-     * @param  string $path
-     * @param  array  $headers
-     * @param  string $params
-     * @param  array  $options
+     * 签名.
+     *
+     * @param array  $credentials
+     * @param string $httpMethod
+     * @param string $path
+     * @param array  $headers
+     * @param string $params
+     * @param array  $options
+     *
      * @return string
      */
     public static function sign(
@@ -231,7 +243,7 @@ class AipSampleSigner
         $path,
         $headers,
         $params,
-        $options = array()
+        $options = []
     ) {
         //设定签名有效时间
         if (!isset($options[AipSignOption::EXPIRATION_IN_SECONDS])) {
@@ -254,8 +266,8 @@ class AipSampleSigner
         }
 
         //生成authString
-        $authString = AipSampleSigner::BCE_AUTH_VERSION . '/' . $accessKeyId . '/'
-            . $timestamp . '/' . $expirationInSeconds;
+        $authString = self::BCE_AUTH_VERSION.'/'.$accessKeyId.'/'
+            .$timestamp.'/'.$expirationInSeconds;
 
         //使用sk和authString生成signKey
         $signingKey = hash_hmac('sha256', $authString, $secretAccessKey);
@@ -274,20 +286,20 @@ class AipSampleSigner
 
         //生成标准化header
         $canonicalHeader = AipHttpUtil::getCanonicalHeaders(
-            AipSampleSigner::getHeadersToSign($headers, $headersToSign)
+            self::getHeadersToSign($headers, $headersToSign)
         );
 
         //整理headersToSign，以';'号连接
         $signedHeaders = '';
         if ($headersToSign !== null) {
             $signedHeaders = strtolower(
-                trim(implode(";", $headersToSign))
+                trim(implode(';', $headersToSign))
             );
         }
 
         //组成标准请求串
         $canonicalRequest = "$httpMethod\n$canonicalURI\n"
-            . "$canonicalQueryString\n$canonicalHeader";
+            ."$canonicalQueryString\n$canonicalHeader";
 
         //使用signKey和标准请求串完成签名
         $signature = hash_hmac('sha256', $canonicalRequest, $signingKey);
@@ -299,26 +311,28 @@ class AipSampleSigner
     }
 
     /**
-     * 根据headsToSign过滤应该参与签名的header
-     * @param  array $headers
-     * @param  array $headersToSign
+     * 根据headsToSign过滤应该参与签名的header.
+     *
+     * @param array $headers
+     * @param array $headersToSign
+     *
      * @return array
      */
     public static function getHeadersToSign($headers, $headersToSign)
     {
 
         //value被trim后为空串的header不参与签名
-        $filter_empty = function($v) {
+        $filter_empty = function ($v) {
             return trim((string) $v) !== '';
         };
         $headers = array_filter($headers, $filter_empty);
 
         //处理headers的key：去掉前后的空白并转化成小写
-        $trim_and_lower = function($str){
+        $trim_and_lower = function ($str) {
             return strtolower(trim($str));
         };
-        $temp = array();
-        $process_keys = function($k, $v) use(&$temp, $trim_and_lower) {
+        $temp = [];
+        $process_keys = function ($k, $v) use (&$temp, $trim_and_lower) {
             $temp[$trim_and_lower($k)] = $v;
         };
         array_map($process_keys, array_keys($headers), $headers);
@@ -336,10 +350,9 @@ class AipSampleSigner
 
             //只选取在headersToSign里面的header
             $filtered_keys = array_intersect_key($header_keys, $headersToSign);
-
         } else {
             //如果没有headersToSign，则根据默认规则来选取headers
-            $filter_by_default = function($k) {
+            $filter_by_default = function ($k) {
                 return AipSampleSigner::isDefaultHeaderToSign($k);
             };
             $filtered_keys = array_filter($header_keys, $filter_by_default);
@@ -352,17 +365,20 @@ class AipSampleSigner
     /**
      * 检查header是不是默认参加签名的：
      * 1.是host、content-type、content-md5、content-length之一
-     * 2.以x-bce开头
-     * @param  array $header
-     * @return boolean
+     * 2.以x-bce开头.
+     *
+     * @param array $header
+     *
+     * @return bool
      */
     public static function isDefaultHeaderToSign($header)
     {
         $header = strtolower(trim($header));
-        if (in_array($header, AipSampleSigner::$defaultHeadersToSign)) {
+        if (in_array($header, self::$defaultHeadersToSign)) {
             return true;
         }
-        return substr_compare($header, AipSampleSigner::BCE_PREFIX, 0, strlen(AipSampleSigner::BCE_PREFIX)) == 0;
+
+        return substr_compare($header, self::BCE_PREFIX, 0, strlen(self::BCE_PREFIX)) == 0;
     }
 }
 AipSampleSigner::__init();
