@@ -118,14 +118,14 @@ class AipBase
     {
         try {
             $result = $this->validate($url, $data);
-            if ($result !== true) {
+            if (true !== $result) {
                 return $result;
             }
 
             $params = [];
             $authObj = $this->auth();
 
-            if ($this->isCloudUser === false) {
+            if (false === $this->isCloudUser) {
                 $params['access_token'] = $authObj['access_token'];
             }
 
@@ -137,7 +137,7 @@ class AipBase
 
             $obj = $this->proccessResult($response['content']);
 
-            if (!$this->isCloudUser && isset($obj['error_code']) && $obj['error_code'] == 110) {
+            if (!$this->isCloudUser && isset($obj['error_code']) && 110 == $obj['error_code']) {
                 $authObj = $this->auth(true);
                 $params['access_token'] = $authObj['access_token'];
                 $response = $this->client->post($url, $data, $params, $headers);
@@ -150,7 +150,7 @@ class AipBase
         } catch (Exception $e) {
             return [
                 'error_code' => 'SDK108',
-                'error_msg'  => 'connection or read data timeout',
+                'error_msg' => 'connection or read data timeout',
             ];
         }
 
@@ -172,7 +172,7 @@ class AipBase
             $authObj = $this->auth();
             $headers = $this->getAuthHeaders('POST', $url);
 
-            if ($this->isCloudUser === false) {
+            if (false === $this->isCloudUser) {
                 $params['access_token'] = $authObj['access_token'];
             }
 
@@ -186,10 +186,11 @@ class AipBase
                     $is_success = true;
                 }
 
-                if (!$this->isCloudUser && isset($obj['error_code']) && $obj['error_code'] == 110) {
+                if (!$this->isCloudUser && isset($obj['error_code']) && 110 == $obj['error_code']) {
                     $authObj = $this->auth(true);
                     $params['access_token'] = $authObj['access_token'];
                     $responses = $this->client->post($url, $data, $params, $headers);
+
                     break;
                 }
             }
@@ -205,7 +206,7 @@ class AipBase
         } catch (Exception $e) {
             return [
                 'error_code' => 'SDK108',
-                'error_msg'  => 'connection or read data timeout',
+                'error_msg' => 'connection or read data timeout',
             ];
         }
 
@@ -251,12 +252,10 @@ class AipBase
      * 写入本地文件.
      *
      * @param array $obj
-     *
-     * @return void
      */
     private function writeAuthObj($obj)
     {
-        if ($obj === null || (isset($obj['is_read']) && $obj['is_read'] === true)) {
+        if (null === $obj || (isset($obj['is_read']) && true === $obj['is_read'])) {
             return;
         }
 
@@ -273,7 +272,7 @@ class AipBase
     private function readAuthObj()
     {
         $content = @file_get_contents($this->getAuthFilePath());
-        if ($content !== false) {
+        if (false !== $content) {
             $obj = json_decode($content, true);
             $this->isCloudUser = $obj['is_cloud_user'];
             $obj['is_read'] = true;
@@ -292,7 +291,6 @@ class AipBase
      */
     private function auth($refresh = false)
     {
-
         //非过期刷新
         if (!$refresh) {
             $obj = $this->readAuthObj();
@@ -302,8 +300,8 @@ class AipBase
         }
 
         $response = $this->client->get($this->accessTokenUrl, [
-            'grant_type'    => 'client_credentials',
-            'client_id'     => $this->apiKey,
+            'grant_type' => 'client_credentials',
+            'client_id' => $this->apiKey,
             'client_secret' => $this->secretKey,
         ]);
 
@@ -341,9 +339,8 @@ class AipBase
      */
     private function getAuthHeaders($method, $url, $params = [], $headers = [])
     {
-
         //不是云的老用户则不用在header中签名 认证
-        if ($this->isCloudUser === false) {
+        if (false === $this->isCloudUser) {
             return $headers;
         }
 
@@ -367,7 +364,7 @@ class AipBase
             'ak' => $this->apiKey,
             'sk' => $this->secretKey,
         ], $method, $obj['path'], $headers, $params, [
-            'timestamp'     => $timestamp,
+            'timestamp' => $timestamp,
             'headersToSign' => array_keys($headers),
         ]);
 
