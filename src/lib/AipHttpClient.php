@@ -81,14 +81,14 @@ class AipHttpClient
         $content = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        if ($code === 0) {
+        if (0 === $code) {
             throw new Exception(curl_error($ch));
         }
 
         curl_close($ch);
 
         return [
-            'code'    => $code,
+            'code' => $code,
             'content' => $content,
         ];
     }
@@ -134,7 +134,7 @@ class AipHttpClient
             $content = curl_multi_getcontent($ch);
             $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $result[] = [
-                'code'    => $code,
+                'code' => $code,
                 'content' => $content,
             ];
             curl_multi_remove_handle($mh, $ch);
@@ -167,14 +167,14 @@ class AipHttpClient
         $content = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        if ($code === 0) {
+        if (0 === $code) {
             throw new Exception(curl_error($ch));
         }
 
         curl_close($ch);
 
         return [
-            'code'    => $code,
+            'code' => $code,
             'content' => $content,
         ];
     }
@@ -207,7 +207,7 @@ class AipHttpClient
         if (!empty($params)) {
             $str = http_build_query($params);
 
-            return $url.(strpos($url, '?') === false ? '?' : '&').$str;
+            return $url.(false === strpos($url, '?') ? '?' : '&').$str;
         } else {
             return $url;
         }

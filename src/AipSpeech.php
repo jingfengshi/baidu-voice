@@ -84,7 +84,7 @@ class AipSpeech extends AipBase
     {
         $obj = json_decode($content, true);
 
-        if ($obj === null) {
+        if (null === $obj) {
             $obj = [
                 'content' => $content,
             ];

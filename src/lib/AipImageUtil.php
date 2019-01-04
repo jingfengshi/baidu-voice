@@ -31,8 +31,8 @@ class AipImageUtil
         $info = getimagesizefromstring($content);
 
         return [
-            'mime'   => $info['mime'],
-            'width'  => $info[0],
+            'mime' => $info['mime'],
+            'width' => $info[0],
             'height' => $info[1],
         ];
     }
