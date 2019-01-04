@@ -1,0 +1,25 @@
+{
+    "name": "Jingfengshi\/baidu-voice",
+    "description": "A voice SDK",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jasper",
+            "email": "240023810@qq.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Jingfengshi\\BaiduVoice\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jingfengshi\\BaiduVoice\\ServiceProvider"
+            ]
+        }
+    }
+}
