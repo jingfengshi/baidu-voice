@@ -1,6 +1,6 @@
 <h1 align="center"> baidu-voice </h1>
 
-<p align="center"> A voice SDK.</p>
+<p align="center">:rainbow: 基于百度语音接口 PHP 获取语音内容的信息组建</p>
 
 
 ## 安装
