@@ -94,26 +94,27 @@ class AipSpeech extends AipBase
         return $obj;
     }
 
-
     /**
      * @param $speech
      * @param $format
-     * @param int $rate
+     * @param int   $rate
      * @param array $options
+     *
      * @return mixed
+     *
      * @throws InvalidArgumentException
      */
-    public function getContentFromVoice($speech, $format, $rate=1600, $options = [])
+    public function getContentFromVoice($speech, $format, $rate = 1600, $options = [])
     {
         $data = [];
-        if(empty($speech)){
+        if (empty($speech)) {
             throw new InvalidArgumentException('请输入语音内容');
         }
-        if(!in_array(\strtolower($format),['pcm','wav','amr'])){
+        if (!in_array(\strtolower($format), ['pcm', 'wav', 'amr'])) {
             throw new InvalidArgumentException('语音类型非法: '.$format);
         }
 
-        try{
+        try {
             $data['speech'] = base64_encode($speech);
             $data['len'] = strlen($speech);
             $data['format'] = $format;
@@ -123,10 +124,9 @@ class AipSpeech extends AipBase
             $data = array_merge($data, $options);
 
             return $this->request($this->asrUrl, $data, []);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
-
     }
 
     /**
