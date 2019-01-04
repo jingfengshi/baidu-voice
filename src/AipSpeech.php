@@ -14,8 +14,8 @@
 * License for the specific language governing permissions and limitations under
 * the License.
 */
-namespace Jingfengshi\BaiduVoice;
-use Jingfengshi\BaiduVoice\lib\AipBase;
+namespace jingfengshi\BaiduVoice;
+use jingfengshi\BaiduVoice\lib\AipBase;
 /**
  * 百度语音
  */

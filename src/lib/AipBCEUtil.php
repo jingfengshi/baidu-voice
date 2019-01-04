@@ -18,7 +18,7 @@
 /**
  * BCE Util
  */
-namespace  Jingfengshi\BaiduVoice\lib;
+namespace  jingfengshi\BaiduVoice\lib;
 class AipHttpUtil
 {
     // 根据RFC 3986，除了：

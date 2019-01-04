@@ -18,7 +18,7 @@
 /**
  * Http Client
  */
-namespace  Jingfengshi\BaiduVoice\lib;
+namespace  jingfengshi\BaiduVoice\lib;
 class AipHttpClient{
 
     /**

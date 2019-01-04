@@ -1,5 +1,5 @@
 {
-    "name": "Jingfengshi\/baidu-voice",
+    "name": "jingfengshi\/baidu-voice",
     "description": "A voice SDK",
     "license": "MIT",
     "authors": [
@@ -18,7 +18,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Jingfengshi\\BaiduVoice\\ServiceProvider"
+                "jingfengshi\\BaiduVoice\\ServiceProvider"
             ]
         }
     }

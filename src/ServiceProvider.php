@@ -1,6 +1,6 @@
 <?php
 
-namespace Jingfengshi\BaiduVoice;
+namespace jingfengshi\BaiduVoice;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
