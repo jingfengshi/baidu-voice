@@ -2,6 +2,7 @@
 
 <p align="center">:rainbow: 基于百度语音接口 PHP 获取语音内容的信息组件</p>
 
+[![Build Status](https://travis-ci.org/jingfengshi/baidu-voice.svg?branch=master)](https://travis-ci.org/jingfengshi/baidu-voice)
 ![StyleCI build status](https://github.styleci.io/repos/164062667/shield) 
 ## 安装
 
@@ -16,7 +17,7 @@ $ composer require jingfengshi/baidu-voice -vvv
     $appKey='xxx';
     $appSecret='xxx';
     $ai_speech=new AiSpeech($appId,$appKey,$appSecret);
-    $res=$ai_speech->asr(file_get_contents(public_path().'/test.mp3'),'pcm',8000);
+    $res=$ai_speech->getContentFromVoice(file_get_contents(public_path().'/test.pcm'),'pcm',8000);
     dd($res)
 ```
 
@@ -47,7 +48,7 @@ BAIDU_VOICE_API_ID=xxxx
     .
     public function edit(AiSpeech $aiSpeech) 
     {
-        $response = $weather->asr(file_get_contents(public_path().'/test.mp3'),'pcm',8000);
+        $response = $weather->getContentFromVoice(file_get_contents(public_path().'/test.pcm'),'pcm',8000);
     }
     .
     .
@@ -63,7 +64,7 @@ BAIDU_VOICE_API_ID=xxxx
     .
     public function edit() 
     {
-        $response = app('AiSpeech')->asr(file_get_contents(public_path().'/test.mp3'),'pcm',8000);;
+        $response = app('AiSpeech')->getContentFromVoice(file_get_contents(public_path().'/test.pcm'),'pcm',8000);;
     }
     .
     .
