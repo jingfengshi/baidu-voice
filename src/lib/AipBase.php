@@ -14,41 +14,45 @@
 * License for the specific language governing permissions and limitations under
 * the License.
 */
+
 namespace  jingfengshi\BaiduVoice\lib;
 
-
 /**
- * Aip Base 基类
+ * Aip Base 基类.
  */
 class AipBase
 {
-
     /**
-     * 获取access token url
+     * 获取access token url.
+     *
      * @var string
      */
     protected $accessTokenUrl = 'https://aip.baidubce.com/oauth/2.0/token';
 
     /**
-     * appId
+     * appId.
+     *
      * @var string
      */
     protected $appId = '';
 
     /**
-     * apiKey
+     * apiKey.
+     *
      * @var string
      */
     protected $apiKey = '';
 
     /**
-     * secretKey
+     * secretKey.
+     *
      * @var string
      */
     protected $secretKey = '';
 
     /**
-     * 权限
+     * 权限.
+     *
      * @var array
      */
     protected $scope = 'brain_all_scope';
@@ -69,7 +73,8 @@ class AipBase
     }
 
     /**
-     * 连接超时
+     * 连接超时.
+     *
      * @param int $ms 毫秒
      */
     public function setConnectionTimeoutInMillis($ms)
@@ -78,7 +83,8 @@ class AipBase
     }
 
     /**
-     * 响应超时
+     * 响应超时.
+     *
      * @param int $ms 毫秒
      */
     public function setSocketTimeoutInMillis($ms)
@@ -87,11 +93,12 @@ class AipBase
     }
 
     /**
-     * 处理请求参数
-     * @param  string $url
-     * @param array $params
-     * @param array $data
-     * @param array $headers
+     * 处理请求参数.
+     *
+     * @param string $url
+     * @param array  $params
+     * @param array  $data
+     * @param array  $headers
      */
     protected function proccessRequest($url, &$params, &$data, $headers)
     {
@@ -101,22 +108,24 @@ class AipBase
 
     /**
      * Api 请求
-     * @param  string $url
-     * @param  mixed $data
+     *
+     * @param string $url
+     * @param mixed  $data
+     *
      * @return mixed
      */
-    protected function request($url, $data, $headers = array())
+    protected function request($url, $data, $headers = [])
     {
         try {
             $result = $this->validate($url, $data);
-            if ($result !== true) {
+            if (true !== $result) {
                 return $result;
             }
 
-            $params = array();
+            $params = [];
             $authObj = $this->auth();
 
-            if ($this->isCloudUser === false) {
+            if (false === $this->isCloudUser) {
                 $params['access_token'] = $authObj['access_token'];
             }
 
@@ -128,7 +137,7 @@ class AipBase
 
             $obj = $this->proccessResult($response['content']);
 
-            if (!$this->isCloudUser && isset($obj['error_code']) && $obj['error_code'] == 110) {
+            if (!$this->isCloudUser && isset($obj['error_code']) && 110 == $obj['error_code']) {
                 $authObj = $this->auth(true);
                 $params['access_token'] = $authObj['access_token'];
                 $response = $this->client->post($url, $data, $params, $headers);
@@ -139,10 +148,10 @@ class AipBase
                 $this->writeAuthObj($authObj);
             }
         } catch (Exception $e) {
-            return array(
+            return [
                 'error_code' => 'SDK108',
                 'error_msg' => 'connection or read data timeout',
-            );
+            ];
         }
 
         return $obj;
@@ -150,18 +159,20 @@ class AipBase
 
     /**
      * Api 多个并发请求
-     * @param  string $url
-     * @param  mixed $data
+     *
+     * @param string $url
+     * @param mixed  $data
+     *
      * @return mixed
      */
     protected function multi_request($url, $data)
     {
         try {
-            $params = array();
+            $params = [];
             $authObj = $this->auth();
             $headers = $this->getAuthHeaders('POST', $url);
 
-            if ($this->isCloudUser === false) {
+            if (false === $this->isCloudUser) {
                 $params['access_token'] = $authObj['access_token'];
             }
 
@@ -175,10 +186,11 @@ class AipBase
                     $is_success = true;
                 }
 
-                if (!$this->isCloudUser && isset($obj['error_code']) && $obj['error_code'] == 110) {
+                if (!$this->isCloudUser && isset($obj['error_code']) && 110 == $obj['error_code']) {
                     $authObj = $this->auth(true);
                     $params['access_token'] = $authObj['access_token'];
                     $responses = $this->client->post($url, $data, $params, $headers);
+
                     break;
                 }
             }
@@ -187,25 +199,26 @@ class AipBase
                 $this->writeAuthObj($authObj);
             }
 
-            $objs = array();
+            $objs = [];
             foreach ($responses as $response) {
                 $objs[] = $this->proccessResult($response['content']);
             }
-
         } catch (Exception $e) {
-            return array(
+            return [
                 'error_code' => 'SDK108',
                 'error_msg' => 'connection or read data timeout',
-            );
+            ];
         }
 
         return $objs;
     }
 
     /**
-     * 格式检查
-     * @param  string $url
-     * @param  array $data
+     * 格式检查.
+     *
+     * @param string $url
+     * @param array  $data
+     *
      * @return mix
      */
     protected function validate($url, &$data)
@@ -214,8 +227,10 @@ class AipBase
     }
 
     /**
-     * 格式化结果
+     * 格式化结果.
+     *
      * @param $content string
+     *
      * @return mixed
      */
     protected function proccessResult($content)
@@ -224,22 +239,23 @@ class AipBase
     }
 
     /**
-     * 返回 access token 路径
+     * 返回 access token 路径.
+     *
      * @return string
      */
     private function getAuthFilePath()
     {
-        return dirname(__FILE__) . DIRECTORY_SEPARATOR . md5($this->apiKey);
+        return dirname(__FILE__).DIRECTORY_SEPARATOR.md5($this->apiKey);
     }
 
     /**
-     * 写入本地文件
-     * @param  array $obj
-     * @return void
+     * 写入本地文件.
+     *
+     * @param array $obj
      */
     private function writeAuthObj($obj)
     {
-        if ($obj === null || (isset($obj['is_read']) && $obj['is_read'] === true)) {
+        if (null === $obj || (isset($obj['is_read']) && true === $obj['is_read'])) {
             return;
         }
 
@@ -249,13 +265,14 @@ class AipBase
     }
 
     /**
-     * 读取本地缓存
+     * 读取本地缓存.
+     *
      * @return array
      */
     private function readAuthObj()
     {
         $content = @file_get_contents($this->getAuthFilePath());
-        if ($content !== false) {
+        if (false !== $content) {
             $obj = json_decode($content, true);
             $this->isCloudUser = $obj['is_cloud_user'];
             $obj['is_read'] = true;
@@ -263,18 +280,17 @@ class AipBase
                 return $obj;
             }
         }
-
-        return null;
     }
 
     /**
      * 认证
+     *
      * @param bool $refresh 是否刷新
+     *
      * @return array
      */
     private function auth($refresh = false)
     {
-
         //非过期刷新
         if (!$refresh) {
             $obj = $this->readAuthObj();
@@ -283,22 +299,25 @@ class AipBase
             }
         }
 
-        $response = $this->client->get($this->accessTokenUrl, array(
+        $response = $this->client->get($this->accessTokenUrl, [
             'grant_type' => 'client_credentials',
             'client_id' => $this->apiKey,
             'client_secret' => $this->secretKey,
-        ));
+        ]);
 
         $obj = json_decode($response['content'], true);
 
         $this->isCloudUser = !$this->isPermission($obj);
+
         return $obj;
     }
 
     /**
-     * 判断认证是否有权限
-     * @param  array $authObj
-     * @return boolean
+     * 判断认证是否有权限.
+     *
+     * @param array $authObj
+     *
+     * @return bool
      */
     protected function isPermission($authObj)
     {
@@ -312,16 +331,16 @@ class AipBase
     }
 
     /**
-     * @param  string $method HTTP method
-     * @param  string $url
-     * @param  array $param 参数
+     * @param string $method HTTP method
+     * @param string $url
+     * @param array  $param  参数
+     *
      * @return array
      */
-    private function getAuthHeaders($method, $url, $params = array(), $headers = array())
+    private function getAuthHeaders($method, $url, $params = [], $headers = [])
     {
-
         //不是云的老用户则不用在header中签名 认证
-        if ($this->isCloudUser === false) {
+        if (false === $this->isCloudUser) {
             return $headers;
         }
 
@@ -341,15 +360,14 @@ class AipBase
         $headers['x-bce-date'] = $timestamp;
 
         //签名
-        $headers['authorization'] = AipSampleSigner::sign(array(
+        $headers['authorization'] = AipSampleSigner::sign([
             'ak' => $this->apiKey,
             'sk' => $this->secretKey,
-        ), $method, $obj['path'], $headers, $params, array(
+        ], $method, $obj['path'], $headers, $params, [
             'timestamp' => $timestamp,
             'headersToSign' => array_keys($headers),
-        ));
+        ]);
 
         return $headers;
     }
-
 }

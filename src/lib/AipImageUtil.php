@@ -14,22 +14,27 @@
 * License for the specific language governing permissions and limitations under
 * the License.
 */
-namespace  jingfengshi\BaiduVoice\lib;
-class AipImageUtil{
 
+namespace  jingfengshi\BaiduVoice\lib;
+
+class AipImageUtil
+{
     /**
-     * 获取图片信息
+     * 获取图片信息.
+     *
      * @param  $content string
+     *
      * @return array
      */
-    public static function getImageInfo($content){
+    public static function getImageInfo($content)
+    {
         $info = getimagesizefromstring($content);
 
-        return array(
+        return [
             'mime' => $info['mime'],
             'width' => $info[0],
             'height' => $info[1],
-        );
+        ];
     }
 }
 
