@@ -11,7 +11,7 @@ $ composer require jingfengshi/baidu-voice -vvv
 
 ## 使用
 ```shell
-    use Jingfengshi\BaiduVoice\AiSpeech;
+    use jingfengshi\BaiduVoice\AiSpeech;
     $appId='xxx';
     $appKey='xxx';
     $appSecret='xxx';
@@ -37,7 +37,7 @@ $ composer require jingfengshi/baidu-voice -vvv
 ```shell
 BAIDU_VOICE_API_ID=xxxx
 ```
-可以使用两种方式来获取  `Jingfengshi\BaiduVoice\AiSpeech` 实例:
+可以使用两种方式来获取  `jingfengshi\BaiduVoice\AiSpeech` 实例:
 ###方法参数注入
 ```shell
   .
